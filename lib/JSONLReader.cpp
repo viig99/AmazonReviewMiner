@@ -6,15 +6,15 @@ coro::generator<Document> JSONLReader::generate(const string &filename) {
         spdlog::error("Could not open file {}", filename);
         co_return;
     }
-    char buffer[4096];
+    char buffer[1024*64];
     string line;
-    Document document;
     while (true) {
         if (gzgets(file, buffer, sizeof(buffer)) == Z_NULL) break;
         line += buffer;
         if (line.back() == '\n') {
             line.pop_back();
-            co_yield document.Parse(line.c_str());
+            Document document;
+            co_yield std::move(document.Parse(line.c_str()));
             line.clear();
         }
     }
