@@ -2,8 +2,8 @@
 # To keep your changes, remove these comment lines, but the plugin won't be able to modify your requirements
 
 requirements:
+  - "rapidjson/1.1.0"
   - "libcoro/0.9"
-  - "nlohmann_json/3.11.2"
   - "zlib/1.2.13"
   - "spdlog/1.12.0"
   - "arrow/13.0.0"

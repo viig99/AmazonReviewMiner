@@ -6,13 +6,14 @@
 
 #include <string>
 #include <zlib.h>
-#include "spdlog/spdlog.h"
-#include "nlohmann/json.hpp"
+#include <spdlog/spdlog.h>
+#include <rapidjson/document.h>
 #include <coro/coro.hpp>
 
-using namespace nlohmann;
+using namespace rapidjson;
+using namespace std;
 
 class JSONLReader {
     public:
-        static coro::generator<json> generate(const std::string& filename );
+        static coro::generator<Document> generate(const string& filename );
 };

@@ -12,6 +12,9 @@
 
 using namespace std;
 
+string getStringOrDefault(const Document& doc, const string& key, const string& default_value = "");
+string getStringFromArrayOrDefault(const Document& doc, const string& key, const string& default_value = "");
+
 struct Product {
     string brand;
     string title;
@@ -21,7 +24,7 @@ struct Product {
     vector<string> also_buy;
 
     // Parameterized constructor using constructor delegation
-    explicit Product(const json& j);
+    explicit Product(Document & doc);
     void printProductInfo();
 };
 

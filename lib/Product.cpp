@@ -4,33 +4,44 @@
 
 #include "Product.h"
 
-Product::Product(const json& j) {
-    brand = trimLower(j.value("brand", ""));
-    title = trimLower(j.value("title", ""));
+string getStringOrDefault(const Document& doc, const string& key, const string& default_value) {
+    auto itr = doc.FindMember(key.c_str());
+    if (itr != doc.MemberEnd()) {
+        return trimLower(itr->value.GetString());
+    }
+    return default_value;
+}
 
-    if (j.contains("description")) {
-        for (const auto &d: j["description"]) {
-            description += d.get<string>() + " ";
+string getStringFromArrayOrDefault(const Document& doc, const string& key, const string& default_value) {
+    auto itr = doc.FindMember(key.c_str());
+    string concat_str;
+    if (itr != doc.MemberEnd()) {
+        for (auto &v : itr->value.GetArray()) {
+            concat_str += v.GetString() + ' ';
         }
-        description = trimLower(description);
+        return trimLower(concat_str);
+    }
+    return default_value;
+}
+
+Product::Product(Document & doc) {
+    brand = getStringOrDefault(doc, "brand");
+    title = getStringOrDefault(doc, "title");
+
+    description = getStringFromArrayOrDefault(doc, "description");
+    feature = getStringFromArrayOrDefault(doc, "feature");
+
+    auto itr_av = doc.FindMember("also_viewed");
+    if (itr_av != doc.MemberEnd()) {
+        for (auto &v : itr_av->value.GetArray()) {
+            also_viewed.emplace_back(v.GetString());
+        }
     }
 
-    if (j.contains("feature")) {
-        for (const auto &f: j["feature"]) {
-            feature += f.get<string>() + " ";
-        }
-        feature = trimLower(feature);
-    }
-
-    if (j.contains("also_viewed")) {
-        for (const auto &asin: j["also_viewed"]) {
-            also_viewed.emplace_back(asin.get<string>());
-        }
-    }
-
-    if (j.contains("also_buy")) {
-        for (const auto &asin: j["also_buy"]) {
-            also_buy.emplace_back(asin.get<string>());
+    auto itr_ab = doc.FindMember("also_buy");
+    if (itr_ab != doc.MemberEnd()) {
+        for (auto &v : itr_ab->value.GetArray()) {
+            also_buy.emplace_back(v.GetString());
         }
     }
 }
@@ -52,8 +63,8 @@ AmazonProductDataset::AmazonProductDataset(const string& filename) {
     }
 
     spdlog::info("Loading dataset from {}", filename);
-    for (const auto& j : JSONLReader::generate(filename)) {
-        asin2product.emplace(j["asin"].get<string>(), Product(j));
+    for (auto& doc : JSONLReader::generate(filename)) {
+        asin2product.emplace(doc["asin"].GetString(), Product(doc));
     }
     spdlog::info("Loaded {} products", asin2product.size());
 }
