@@ -25,7 +25,7 @@ endforeach()
 add_executable(ArrowExperiments main.cpp)
 
 # Gather all module files in a directory
-file(GLOB MODULE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/*.cppm")
+file(GLOB MODULE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/modules/*.cppm")
 
 # Add sources to the executable
 target_sources(ArrowExperiments
