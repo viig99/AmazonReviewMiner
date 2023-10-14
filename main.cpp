@@ -1,4 +1,4 @@
-import AdvancedMath = math;
+import AdvancedMath;
 #include <iostream>
 #include "spdlog/spdlog.h"
 
