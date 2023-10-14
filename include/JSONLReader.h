@@ -8,8 +8,11 @@
 #include <zlib.h>
 #include "spdlog/spdlog.h"
 #include "nlohmann/json.hpp"
+#include <coro/coro.hpp>
+
+using namespace nlohmann;
 
 class JSONLReader {
     public:
-        static int generate(std::string& filename );
+        static coro::generator<json> generate(std::string& filename );
 };

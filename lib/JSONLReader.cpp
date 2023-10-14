@@ -1,10 +1,10 @@
 #include "JSONLReader.h"
 
-int JSONLReader::generate(std::string& filename) {
+coro::generator<json> JSONLReader::generate(std::string& filename) {
     gzFile file = gzopen(filename.c_str(), "rb");
     if (!file) {
         spdlog::error("Could not open file {}", filename);
-        return 1;
+        co_return;
     }
     char buffer[1024];
     std::string line;
@@ -13,12 +13,11 @@ int JSONLReader::generate(std::string& filename) {
         line += buffer;
         if (line.back() == '\n') {
             line.pop_back();
-            auto j = nlohmann::json::parse(line);
-            spdlog::info(j["asin"]);
+            auto j = json::parse(line);
+            co_yield j;
             line.clear();
         }
     }
 
     gzclose(file);
-    return 0;
 }
