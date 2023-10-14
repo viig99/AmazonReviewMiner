@@ -45,6 +45,7 @@ void Product::printProductInfo() {
 }
 
 AmazonProductDataset::AmazonProductDataset(const string& filename) {
+    Timer timer("Loading AmazonProductDataset from JSONL file");
     if (!filesystem::exists(filename)) {
         spdlog::error("File {} does not exist", filename);
         return;

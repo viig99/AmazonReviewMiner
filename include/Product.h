@@ -8,6 +8,7 @@
 #include <optional>
 #include "JSONLReader.h"
 #include "TextUtils.h"
+#include "TimeUtils.h"
 
 using namespace std;
 
