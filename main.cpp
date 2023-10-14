@@ -1,10 +1,9 @@
-import AdvancedMath;
-#include <iostream>
 #include "spdlog/spdlog.h"
+#include "JSONLReader.h"
 
 int main() {
     spdlog::info("Hello, World!");
-    spdlog::info("5 + 3 = {}", AdvancedMath::add(5, 3));
-    spdlog::info("5 - 3 = {}", AdvancedMath::sub(5, 3));
+    std::string filename = "../data/meta/meta_AMAZON_FASHION.json.gz";
+    JSONLReader::generate(filename);
     return 0;
 }
