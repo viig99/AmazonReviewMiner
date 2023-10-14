@@ -5,21 +5,21 @@
 #include "Product.h"
 
 Product::Product(const json& j) {
-    brand = trim(j.value("brand", ""));
-    title = trim(j.value("title", ""));
+    brand = trimLower(j.value("brand", ""));
+    title = trimLower(j.value("title", ""));
 
     if (j.contains("description")) {
         for (const auto &d: j["description"]) {
             description += d.get<string>() + " ";
         }
-        description = trim(description);
+        description = trimLower(description);
     }
 
     if (j.contains("feature")) {
         for (const auto &f: j["feature"]) {
             feature += f.get<string>() + " ";
         }
-        feature = trim(feature);
+        feature = trimLower(feature);
     }
 
     if (j.contains("also_viewed")) {
