@@ -14,5 +14,5 @@ using namespace nlohmann;
 
 class JSONLReader {
     public:
-        static coro::generator<json> generate(std::string& filename );
+        static coro::generator<json> generate(const std::string& filename );
 };
