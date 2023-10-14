@@ -13,8 +13,8 @@ string trimLower(const string& input) {
                    | views::reverse
                    | views::drop_while(is_space)
                    | views::reverse
-                   | views::transform(to_lower)
-                   | views::filter(no_newlines);
+                   | views::filter(no_newlines)
+                   | views::transform(to_lower);
     string result(trimmed.begin(), trimmed.end());
 
     // Remove consecutive spaces
