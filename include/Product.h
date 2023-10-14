@@ -5,7 +5,9 @@
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
+#include <optional>
 #include "JSONLReader.h"
+#include "TextUtils.h"
 
 using namespace std;
 
@@ -19,13 +21,14 @@ struct Product {
 
     // Parameterized constructor using constructor delegation
     explicit Product(const json& j);
+    void printProductInfo();
 };
 
 class AmazonProductDataset {
 public:
     explicit AmazonProductDataset(const string& filename);
-    Product getProduct(const string& asin);
-    bool hasProduct(const string& asin);
+    optional<Product> getProduct(const string& asin);
+    void showProducts();
 
 private:
     unordered_map<string, Product> asin2product;

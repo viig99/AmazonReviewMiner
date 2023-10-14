@@ -5,19 +5,21 @@
 #include "Product.h"
 
 Product::Product(const json& j) {
-    brand = j.value("brand", "");
-    title = j.value("title", "");
+    brand = trim(j.value("brand", ""));
+    title = trim(j.value("title", ""));
 
     if (j.contains("description")) {
         for (const auto &d: j["description"]) {
             description += d.get<string>() + " ";
         }
+        description = trim(description);
     }
 
     if (j.contains("feature")) {
         for (const auto &f: j["feature"]) {
             feature += f.get<string>() + " ";
         }
+        feature = trim(feature);
     }
 
     if (j.contains("also_viewed")) {
@@ -33,6 +35,15 @@ Product::Product(const json& j) {
     }
 }
 
+void Product::printProductInfo() {
+    spdlog::info("Brand: {}", brand);
+    spdlog::info("Title: {}", title);
+    spdlog::info("Description: {}", description);
+    spdlog::info("Feature: {}", feature);
+    spdlog::info("Also viewed: {}", fmt::join(also_viewed, ", "));
+    spdlog::info("Also buy: {}", fmt::join(also_buy, ", "));
+}
+
 AmazonProductDataset::AmazonProductDataset(const string& filename) {
     if (!filesystem::exists(filename)) {
         spdlog::error("File {} does not exist", filename);
@@ -46,10 +57,15 @@ AmazonProductDataset::AmazonProductDataset(const string& filename) {
     spdlog::info("Loaded {} products", asin2product.size());
 }
 
-Product AmazonProductDataset::getProduct(const string &asin) {
-    return asin2product.at(asin);
+optional<Product> AmazonProductDataset::getProduct(const string &asin) {
+    auto it = asin2product.find(asin);
+    if (it != asin2product.end()) {
+        return it->second;  // Return Product if found
+    }
+    return nullopt;
 }
 
-bool AmazonProductDataset::hasProduct(const string &asin) {
-    return asin2product.contains(asin);
+void AmazonProductDataset::showProducts() {
+    auto products = asin2product | std::views::keys;
+    spdlog::info("Products: {}", fmt::join(products, ", "));
 }
