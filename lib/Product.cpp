@@ -4,25 +4,7 @@
 
 #include "Product.h"
 
-string getStringOrDefault(const Document& doc, const string& key, const string& default_value) {
-    auto itr = doc.FindMember(key.c_str());
-    if (itr != doc.MemberEnd()) {
-        return trimLower(itr->value.GetString());
-    }
-    return default_value;
-}
 
-string getStringFromArrayOrDefault(const Document& doc, const string& key, const string& default_value) {
-    auto itr = doc.FindMember(key.c_str());
-    string concat_str;
-    if (itr != doc.MemberEnd()) {
-        for (auto &v : itr->value.GetArray()) {
-            concat_str += v.GetString() + ' ';
-        }
-        return trimLower(concat_str);
-    }
-    return default_value;
-}
 
 Product::Product(Document & doc) {
     brand = getStringOrDefault(doc, "brand");

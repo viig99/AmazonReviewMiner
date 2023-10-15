@@ -5,7 +5,6 @@
 #pragma once
 
 #include <chrono>
-#include <utility>
 #include "spdlog/spdlog.h"
 
 class Timer {

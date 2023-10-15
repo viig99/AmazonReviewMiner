@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <utility>
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
@@ -11,9 +10,6 @@
 #include "TimeUtils.h"
 
 using namespace std;
-
-string getStringOrDefault(const Document& doc, const string& key, const string& default_value = "");
-string getStringFromArrayOrDefault(const Document& doc, const string& key, const string& default_value = "");
 
 struct Product {
     string brand;

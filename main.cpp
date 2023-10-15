@@ -1,17 +1,20 @@
 #include "spdlog/spdlog.h"
 #include "Product.h"
+#include "Review.h"
 
 int main() {
-    std::string filename = "../data/meta/meta_AMAZON_FASHION.json.gz";
-    AmazonProductDataset dataset(filename);
+    std::string metadata_filename = "../data/meta/meta_AMAZON_FASHION.json.gz";
+    std::string review_filename = "../data/reviews/AMAZON_FASHION_5.json.gz";
 
-    std::string test_asin = "B005HWMEPK";
-    auto product = dataset.getProduct(test_asin);
-    if (product.has_value()) {
-        spdlog::info("Dataset contains {}", test_asin);
-        product.value().printProductInfo();
-    } else {
-        spdlog::info("Dataset does not contain {}", test_asin);
+    AmazonProductDataset dataset(metadata_filename);
+    for (auto review : AmazonReviewDataset::generate(review_filename)) {
+        review.printReviewInfo();
+        auto product_o = dataset.getProduct(review.product_id);
+        if (product_o.has_value()) {
+            auto product = product_o.value();
+            product.printProductInfo();
+        }
+        break;
     }
 
     return 0;
