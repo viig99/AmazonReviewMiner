@@ -26,6 +26,11 @@ vector<fs::path> glob(const fs::path& pattern) {
             result.push_back(p);
         }
     }
+
+    // Sort the result vector based on the filenames.
+    sort(result.begin(), result.end(), [](const fs::path& a, const fs::path& b) {
+        return a.filename().string() < b.filename().string();
+    });
     return result;
 }
 
