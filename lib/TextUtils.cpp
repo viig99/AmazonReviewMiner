@@ -39,6 +39,19 @@ string join(const vector<string>& vec, const string& delimiter) {
     return result;
 }
 
+unordered_set<string> split(const string& input, const string& delimiter) {
+    unordered_set<string> result;
+    size_t start = 0;
+    size_t end = input.find(delimiter);
+    while (end != string::npos) {
+        result.emplace(input.substr(start, end - start));
+        start = end + delimiter.length();
+        end = input.find(delimiter, start);
+    }
+    result.emplace(input.substr(start, end));
+    return result;
+}
+
 string getStringOrDefault(const Document& doc, const string& key, const string& default_value) {
     auto itr = doc.FindMember(key.c_str());
     if (itr != doc.MemberEnd()) {
@@ -57,4 +70,42 @@ string getStringFromArrayOrDefault(const Document& doc, const string& key, const
         return trimLower(concat_str);
     }
     return default_value;
+}
+
+string to_lower(const string& input) {
+    string lower;
+    transform(input.begin(), input.end(), std::back_inserter(lower), ::tolower);
+    return lower;
+}
+
+StopwordRemover::StopwordRemover(const string &filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        spdlog::error("File {} does not exist", filename);
+        return;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        stopwords.emplace(to_lower(line));
+    }
+    spdlog::info("# Stopwords: {}", stopwords.size());
+}
+
+bool StopwordRemover::isStopword(const string &word) {
+    return stopwords.find(word) != stopwords.end();
+}
+
+string StopwordRemover::removeStopwords(const string &input) {
+    string result;
+    istringstream iss(input);
+    string word;
+    while (iss >> word) {
+        if (!isStopword(word)) {
+            if (!result.empty())
+                result += ' ';
+            result += word;
+        }
+    }
+    return result;
 }
