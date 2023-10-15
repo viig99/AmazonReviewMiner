@@ -38,17 +38,16 @@ void Product::printProductInfo() {
 }
 
 AmazonProductDataset::AmazonProductDataset(const string& filename) {
-    Timer timer("Loading AmazonProductDataset from JSONL file");
+    Timer timer("AmazonProductDataset");
     if (!filesystem::exists(filename)) {
         spdlog::error("File {} does not exist", filename);
         return;
     }
 
-    spdlog::info("Loading dataset from {}", filename);
     for (auto& doc : JSONLReader::generate(filename)) {
         asin2product.emplace(doc["asin"].GetString(), Product(doc));
     }
-    spdlog::info("Loaded {} products", asin2product.size());
+    spdlog::info("# Products: {}", asin2product.size());
 }
 
 optional<Product> AmazonProductDataset::getProduct(const string &asin) {

@@ -14,7 +14,7 @@ int main() {
         auto metadata_filename = metadata_filename_path.relative_path().string();
         auto review_filename = review_filename_path.relative_path().string();
         spdlog::info("Metadata: {}, Review: {}", metadata_filename, review_filename);
-        Timer timer("Parsing products and reading reviews");
+        Timer timer("Product Review Pairs");
         AmazonProductDataset dataset(metadata_filename);
         int num_reviews = 0;
         for (const auto& review : AmazonReviewDataset::generate(review_filename)) {
@@ -25,7 +25,7 @@ int main() {
             num_reviews++;
         }
 
-        spdlog::info("Total reviews: {}", num_reviews);
+        spdlog::info("# Reviews: {}", num_reviews);
     }
 
     return 0;
