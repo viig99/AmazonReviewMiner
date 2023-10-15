@@ -18,8 +18,8 @@ string trimLower(const string& input) {
     string result(trimmed.begin(), trimmed.end());
 
     // Remove consecutive spaces
-    auto new_end = unique(result.begin(), result.end(), [&is_space](char a, char b) {
-        return is_space(a) && is_space(b);
+    auto new_end = unique(result.begin(), result.end(), [](char a, char b) {
+        return isspace(a) && isspace(b);
     });
 
     result.erase(new_end, result.end());

@@ -4,6 +4,14 @@
 
 #pragma once
 
+#if defined(__SSE4_2__)
+#  define RAPIDJSON_SSE42
+#elif defined(__SSE2__)
+#  define RAPIDJSON_SSE2
+#elif defined(__ARM_NEON)
+#  define RAPIDJSON_NEON
+#endif
+
 #include <string>
 #include <zlib.h>
 #include <spdlog/spdlog.h>
