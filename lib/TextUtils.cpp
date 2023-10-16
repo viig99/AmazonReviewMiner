@@ -4,17 +4,15 @@
 
 #include "TextUtils.h"
 
-string trimLower(const string& input) {
+string strip(const string& input) {
     auto is_space = [](unsigned char c) { return isspace(c); };
     auto no_newlines = [](unsigned char c) { return c != '\n'; };
-    auto to_lower = [](unsigned char c) { return tolower(c); };
 
     auto trimmed = input | views::drop_while(is_space)
                    | views::reverse
                    | views::drop_while(is_space)
                    | views::reverse
-                   | views::filter(no_newlines)
-                   | views::transform(to_lower);
+                   | views::filter(no_newlines);
     string result(trimmed.begin(), trimmed.end());
 
     // Remove consecutive spaces
@@ -55,7 +53,7 @@ unordered_set<string> split(const string& input, const string& delimiter) {
 string getStringOrDefault(const Document& doc, const string& key, const string& default_value) {
     auto itr = doc.FindMember(key.c_str());
     if (itr != doc.MemberEnd()) {
-        return trimLower(itr->value.GetString());
+        return strip(itr->value.GetString());
     }
     return default_value;
 }
@@ -67,7 +65,7 @@ string getStringFromArrayOrDefault(const Document& doc, const string& key, const
         for (auto &v : itr->value.GetArray()) {
             concat_str += v.GetString() + ' ';
         }
-        return trimLower(concat_str);
+        return strip(concat_str);
     }
     return default_value;
 }
@@ -93,7 +91,8 @@ StopwordRemover::StopwordRemover(const string &filename) {
 }
 
 bool StopwordRemover::isStopword(const string &word) {
-    return stopwords.find(word) != stopwords.end();
+    auto word_lower = to_lower(word);
+    return stopwords.find(word_lower) != stopwords.end();
 }
 
 string StopwordRemover::removeStopwords(const string &input) {

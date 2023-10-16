@@ -26,8 +26,6 @@ int main() {
             if (product_o.has_value()) {
                 auto product = product_o.value();
                 if (processor.review_contains_product_metadata(review, product)) {
-                    review.printReviewInfo();
-                    product.printProductInfo();
                     num_reviews_with_condition++;
                 }
             }

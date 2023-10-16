@@ -18,7 +18,7 @@
 using namespace std;
 using namespace rapidjson;
 
-string trimLower(const string& input);
+string strip(const string& input);
 string join(const vector<string>& vec, const string& delimiter);
 string to_lower(const string& input);
 unordered_set<string> split(const string& input, const string& delimiter = " ");
