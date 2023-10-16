@@ -16,9 +16,10 @@ add_executable(ArrowExperiments main.cpp)
 
 # Gather all module files in a directory
 file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.cpp")
+file(GLOB HEADER_ONLY_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.hpp")
 
 # Add sources to the executable
-target_sources(ArrowExperiments PRIVATE ${SOURCE_FILES})
+target_sources(ArrowExperiments PRIVATE ${SOURCE_FILES} ${HEADER_ONLY_FILES})
 target_include_directories(ArrowExperiments PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Link the executable to the required libraries

@@ -10,7 +10,7 @@ bool ReviewProductPairProcessor::review_contains_product_metadata(const Review& 
 
     auto removeStopwords = [&](const auto& text) { return _stopwordRemover->removeStopwords(text); };
 
-    auto review_text = removeStopwords(review.title + " " + review.message);
+    auto review_text = to_lower(removeStopwords(review.title + " " + review.message));
     auto brand_keywords = split(removeStopwords(product.brand));
 
     auto keyword_in_review_text = [&review_text](auto& keyword) { return review_text.find(to_lower(keyword)) != std::string::npos; };
