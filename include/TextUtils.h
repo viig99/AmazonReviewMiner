@@ -18,19 +18,21 @@
 using namespace std;
 using namespace rapidjson;
 
-string strip(const string& input);
-string join(const vector<string>& vec, const string& delimiter);
-string to_lower(const string& input);
-unordered_set<string> split(const string& input, const string& delimiter = " ");
+string strip(const string &input);
+string join(const vector<string> &vec, const string &delimiter);
+string to_lower(const string &input);
+unordered_set<string> split(const string &input, const string &delimiter = " ");
 
-string getStringOrDefault(const Document& doc, const string& key, const string& default_value = "");
-string getStringFromArrayOrDefault(const Document& doc, const string& key, const string& default_value = "");
+string getStringOrDefault(const Document &doc, const string &key, const string &default_value = "");
+string getStringFromArrayOrDefault(const Document &doc, const string &key, const string &default_value = "");
 
 class StopwordRemover {
-    public:
-        StopwordRemover(const string& filename);
-        bool isStopword(const string& word);
-        string removeStopwords(const string& input);
-    private:
-        unordered_set<string> stopwords;
+public:
+    explicit StopwordRemover(const string &filename);
+    bool isStopword(const string &word);
+    bool containsStopword(const string &sentence);
+    string removeStopwords(const string &input);
+
+private:
+    unordered_set<string> stopwords;
 };

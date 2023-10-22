@@ -9,7 +9,8 @@
 
 class Timer {
 public:
-    explicit Timer(std::string  name): start(std::chrono::high_resolution_clock::now()), name_{std::move(name)} {};
+    explicit Timer(std::string name) : start(std::chrono::high_resolution_clock::now()), name_{std::move(name)} {};
+
     ~Timer();
 
 private:

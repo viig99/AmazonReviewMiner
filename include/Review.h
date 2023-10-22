@@ -18,12 +18,13 @@ struct Review {
     string title;
 
     // Parameterized constructor using constructor delegation
-    explicit Review(Document & doc);
+    explicit Review(Document &doc);
+
     void printReviewInfo();
 };
 
 class AmazonReviewDataset {
 public:
-    static coro::generator<Review> generate(const string& filename );
+    static coro::generator<Review> generate(const string &filename);
 };
 

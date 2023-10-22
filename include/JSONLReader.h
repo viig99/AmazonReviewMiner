@@ -22,6 +22,6 @@ using namespace rapidjson;
 using namespace std;
 
 class JSONLReader {
-    public:
-        static coro::generator<Document> generate(const string& filename );
+public:
+    static coro::generator<Document> generate(const string &filename);
 };

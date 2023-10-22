@@ -72,7 +72,7 @@ string getStringFromArrayOrDefault(const Document& doc, const string& key, const
 
 string to_lower(const string& input) {
     string lower;
-    transform(input.begin(), input.end(), std::back_inserter(lower), ::tolower);
+    transform(input.begin(), input.end(), back_inserter(lower), ::tolower);
     return lower;
 }
 
@@ -107,4 +107,11 @@ string StopwordRemover::removeStopwords(const string &input) {
         }
     }
     return result;
+}
+
+bool StopwordRemover::containsStopword(const string& sentence) {
+    istringstream iss(sentence);
+    return find_if(istream_iterator<string>(iss), istream_iterator<string>(),
+                        [&](const string& word){ return isStopword(word); })
+           != istream_iterator<string>();
 }

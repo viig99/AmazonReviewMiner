@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "Product.h"
 #include "Review.h"
 #include "string"
@@ -13,7 +14,8 @@ public:
     ReviewProductPairProcessor() {
         _stopwordRemover = std::make_unique<StopwordRemover>("../assets/stopwords-en.txt");
     }
-    bool review_contains_product_metadata(const Review& review, const Product& product);
+
+    bool review_contains_product_metadata(const Review &review, const Product &product);
 
 private:
     std::unique_ptr<StopwordRemover> _stopwordRemover;

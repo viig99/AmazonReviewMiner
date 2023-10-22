@@ -20,14 +20,17 @@ struct Product {
     vector<string> also_buy;
 
     // Parameterized constructor using constructor delegation
-    explicit Product(Document & doc);
+    explicit Product(Document &doc);
+
     void printProductInfo();
 };
 
 class AmazonProductDataset {
 public:
-    explicit AmazonProductDataset(const string& filename);
-    optional<Product> getProduct(const string& asin);
+    explicit AmazonProductDataset(const string &filename);
+
+    optional<Product> getProduct(const string &asin);
+
     void showProducts();
 
 private:
