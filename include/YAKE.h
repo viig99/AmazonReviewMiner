@@ -33,7 +33,7 @@ private:
     double scoreTerm(const string &word);
     double scoreCandidateKeywords(const string &word);
 
-    vector<string> generateCandidateKeywords(const vector<vector<string>> &sentences);
+    vector<pair<string, double>> generateCandidateKeywords(const vector<vector<string>> &sentences);
 
     // Internal Stats Tracking
     tsl::hopscotch_map<string, int> _tfU;

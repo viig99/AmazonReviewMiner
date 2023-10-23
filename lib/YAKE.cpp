@@ -7,9 +7,10 @@
 vector<vector<string>> YAKE::tokenize(const string &sentence) {
     vector<vector<string>> result;
     auto is_delimiter = [](char c) { return isspace(c) || ispunct(c); };
+    auto is_sentence_end = [](char c) { return ispunct(c) || c == '\n'; };
     auto sentence_start = sentence.begin();
     while (sentence_start != sentence.end()) {
-        auto sentence_end = find(sentence_start, sentence.end(), '\n');
+        auto sentence_end = find_if(sentence_start, sentence.end(), is_sentence_end);
         vector<string> tokens;
         auto start = sentence_start;
         while (start != sentence_end) {
@@ -28,11 +29,16 @@ void YAKE::updateFrequencies(const string& word, int sentencePosition, const opt
     if (word.empty()) return;
 
     string word_lower = to_lower(word);
+    PositionW[word_lower].insert(sentencePosition + 1);
     _tf[word_lower] += 1;
-    PositionW[word_lower].insert(sentencePosition);
 
     if (isupper(word[0])) {
         _tfU[word_lower] += 1;
+    }
+
+    auto is_acronym = all_of(word.begin(), word.end(), ::isupper);
+    if (is_acronym) {
+        _tfA[word_lower] += 1;
     }
 
     if (leftWord.has_value()) {
@@ -53,11 +59,7 @@ void YAKE::updateFrequencies(const string& word, int sentencePosition, const opt
         _tfTrigrams[trigram_lower] += 1;
     }
 
-    auto is_acronym = all_of(word.begin(), word.end(), ::isupper);
 
-    if (is_acronym) {
-        _tfA[word_lower] += 1;
-    }
 }
 
 double YAKE::scoreWCase(const string& word) {
@@ -72,7 +74,7 @@ double YAKE::scoreWCase(const string& word) {
         return 0.0;
     }
 
-    return static_cast<double>(max_tfU_tfA) / log2(static_cast<double>(tf));
+    return static_cast<double>(max_tfU_tfA) / log2(1 + tf);
 }
 
 double YAKE::scoreWPosition(const string& word) {
@@ -132,7 +134,9 @@ double YAKE::scoreTerm(const string& word) {
     double scoreDiffSentence = scoreWDiffSentence(word);
     double scoreRelatedness = scoreWRelatedness(word);
 
-    return (scoreRelatedness * scorePosition) / (scoreCase + (scoreFrequency/scoreRelatedness) + (scoreDiffSentence/scoreRelatedness));
+    double numerator = scoreRelatedness * scorePosition;
+    double denominator = scoreCase + (scoreFrequency/scoreRelatedness) + (scoreDiffSentence/scoreRelatedness);
+    return numerator / denominator;
 }
 
 double YAKE::scoreCandidateKeywords(const string& word) {
@@ -152,13 +156,14 @@ double YAKE::scoreCandidateKeywords(const string& word) {
 
     auto transformed_range = tokens |
             views::transform([&](const string& token) { return scoreTerm(token); });
-    auto productNum = accumulate(transformed_range.begin(), transformed_range.end(), 1, multiplies<int>());
-    auto sumDenom = accumulate(transformed_range.begin(), transformed_range.end(), 0, plus<int>());
+    auto productNum = accumulate(transformed_range.begin(), transformed_range.end(), 1.0, multiplies<>());
+    auto sumDenom = accumulate(transformed_range.begin(), transformed_range.end(), 0.0, plus<>());
 
-    return static_cast<double>(productNum) / ((1.0 + static_cast<double>(sumDenom)) * static_cast<double>(termFreq));
+    return productNum / ((1.0 + sumDenom) * static_cast<double>(termFreq));
 }
 
 YAKE::YAKE(const string &sentence) {
+    Timer timer("YAKE mainFunc");
     _stopwordRemover = make_unique<StopwordRemover>("../assets/stopwords-en.txt");
 
     auto sentences = tokenize(sentence);
@@ -188,9 +193,13 @@ YAKE::YAKE(const string &sentence) {
     //    score the more important the keyword will be.
     auto keywords = generateCandidateKeywords(sentences);
 
+    for (const auto& kw : keywords) {
+        cout << kw.first << ":" << kw.second << endl;
+    }
+
 }
 
-vector<string> YAKE::generateCandidateKeywords(const vector<vector<string>>& sentences) {
+vector<pair<string, double>> YAKE::generateCandidateKeywords(const vector<vector<string>>& sentences) {
     for (int i = 0; i < _numSentences; i++) {
         auto tokens = sentences[i];
         for (int j = 0; j < tokens.size(); j++) {
@@ -198,13 +207,13 @@ vector<string> YAKE::generateCandidateKeywords(const vector<vector<string>>& sen
             auto leftWord = (j == 0) ? optional<string>() : optional<string>(tokens[j-1]);
             auto rightWord = (j == tokens.size() - 1) ? optional<string>() : optional<string>(tokens[j+1]);
 
-            if (!_nGramScores.contains(word)) {
+            if (!_nGramScores.contains(word) and !_stopwordRemover->isStopword(word)) {
                 _nGramScores[word] = scoreCandidateKeywords(word);
             }
 
             if (leftWord.has_value()) {
                 auto bigram = leftWord.value() + " " + word;
-                if (!_nGramScores.contains(bigram)) {
+                if (!_nGramScores.contains(bigram) and !_stopwordRemover->containsStopword(bigram)) {
                     _nGramScores[bigram] = scoreCandidateKeywords(bigram);
                 }
             }
@@ -228,11 +237,5 @@ vector<string> YAKE::generateCandidateKeywords(const vector<vector<string>>& sen
                   return a.second < b.second;
               });
 
-    // Extract the sorted keys into a new vector
-    vector<string> sortedKeys;
-    for (const auto& pair : keyValuePairs) {
-        sortedKeys.push_back(pair.first);
-    }
-
-    return sortedKeys;
+    return keyValuePairs;
 }

@@ -30,9 +30,26 @@ vector<tuple<fs::path, fs::path>> zip(
 
 template<typename T>
 T median(vector<T> vec) {
-    size_t n = vec.size() / 2;
+    size_t size = vec.size();
+    // Check for empty vector
+    if (size == 0) {
+        throw invalid_argument("Vector is empty, median is undefined.");
+    }
+    // Calculate index for middle element
+    size_t n = size / 2;
+    // Partition vector around middle element
     nth_element(vec.begin(), vec.begin() + n, vec.end());
-    return vec[vec.size() / 2];
+
+    // If odd size, return the middle element
+    if (size % 2 != 0) {
+        return vec[n];
+    }
+
+    // If even size, find the second middle element and return the average
+    T first_middle = vec[n];
+    nth_element(vec.begin(), vec.begin() + n - 1, vec.end());
+    T second_middle = vec[n - 1];
+    return (first_middle + second_middle) / static_cast<T>(2);
 }
 
 template<typename T>
@@ -44,18 +61,18 @@ tuple<double, double, double> mean_max_std(const tsl::hopscotch_map<string, T> &
     auto value_view = map | views::values;
 
     // Calculate mean
-    T sum = accumulate(value_view.begin(), value_view.end(), T{});
+    auto sum = accumulate(value_view.begin(), value_view.end(), T{});
     auto size = static_cast<double>(map.size());
-    double mean = static_cast<double>(sum) / size;
+    auto mean = static_cast<double>(sum) / size;
 
     // Calculate max
-    T max_val = *max_element(value_view.begin(), value_view.end());
+    auto max_val = *max_element(value_view.begin(), value_view.end());
 
     // Calculate standard deviation
-    double squared_sum = accumulate(value_view.begin(), value_view.end(), 0.0, [mean](double acc, T val) {
+    auto squared_sum = accumulate(value_view.begin(), value_view.end(), 0.0, [mean](double acc, auto val) {
         return acc + pow(val - mean, 2);
     });
-    double std_dev = sqrt(squared_sum / size);
+    auto std_dev = sqrt(squared_sum / size);
 
     return {mean, static_cast<double>(max_val), std_dev};
 }
