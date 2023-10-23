@@ -12,9 +12,9 @@
 #include <numeric>
 #include <cmath>
 #include <tuple>
-#include <unordered_map>
+#include <tsl/hopscotch_map.h>
 #include <algorithm>
-#include <unordered_set>
+#include <tsl/hopscotch_set.h>
 
 using namespace std;
 namespace fs = filesystem;
@@ -36,7 +36,7 @@ T median(vector<T> vec) {
 }
 
 template<typename T>
-tuple<double, double, double> mean_max_std(const unordered_map<string, T> &map) {
+tuple<double, double, double> mean_max_std(const tsl::hopscotch_map<string, T> &map) {
     if (map.empty()) {
         return {0.0, T{}, 0.0}; // return zero for all stats
     }
@@ -61,8 +61,8 @@ tuple<double, double, double> mean_max_std(const unordered_map<string, T> &map) 
 }
 
 template<typename T>
-int unionSize(const unordered_set<T> &set1, const unordered_set<T> &set2) {
-    unordered_set<T> result = set1;  // Copy elements from set1 into result
+int unionSize(const tsl::hopscotch_set<T> &set1, const tsl::hopscotch_set<T> &set2) {
+    auto result = set1;  // Copy elements from set1 into result
 
     // Insert elements from set2 into result. Duplicates will be ignored.
     result.insert(set2.begin(), set2.end());

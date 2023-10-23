@@ -13,7 +13,7 @@
 #include <sstream>
 #include <spdlog/spdlog.h>
 #include <rapidjson/document.h>
-#include <unordered_set>
+#include <tsl/hopscotch_set.h>
 
 using namespace std;
 using namespace rapidjson;
@@ -21,7 +21,7 @@ using namespace rapidjson;
 string strip(const string &input);
 string join(const vector<string> &vec, const string &delimiter);
 string to_lower(const string &input);
-unordered_set<string> split(const string &input, const string &delimiter = " ");
+tsl::hopscotch_set<string> split(const string &input, const string &delimiter = " ");
 
 string getStringOrDefault(const Document &doc, const string &key, const string &default_value = "");
 string getStringFromArrayOrDefault(const Document &doc, const string &key, const string &default_value = "");
@@ -34,5 +34,5 @@ public:
     string removeStopwords(const string &input);
 
 private:
-    unordered_set<string> stopwords;
+    tsl::hopscotch_set<string> stopwords;
 };

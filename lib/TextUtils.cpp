@@ -37,8 +37,8 @@ string join(const vector<string>& vec, const string& delimiter) {
     return result;
 }
 
-unordered_set<string> split(const string& input, const string& delimiter) {
-    unordered_set<string> result;
+tsl::hopscotch_set<string> split(const string& input, const string& delimiter) {
+    tsl::hopscotch_set<string> result;
     size_t start = 0;
     size_t end = input.find(delimiter);
     while (end != string::npos) {

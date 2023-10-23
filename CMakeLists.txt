@@ -6,7 +6,7 @@ project(Miner LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # Find required packages
-set(REQUIRED_PACKAGES Spdlog ZLIB libcoro RapidJSON Catch2)
+set(REQUIRED_PACKAGES Spdlog ZLIB libcoro RapidJSON tsl-hopscotch-map Catch2)
 foreach(PACKAGE ${REQUIRED_PACKAGES})
     find_package(${PACKAGE} REQUIRED)
 endforeach()
@@ -23,10 +23,10 @@ target_sources(Miner PRIVATE ${SOURCE_FILES} ${HEADER_ONLY_FILES})
 target_include_directories(Miner PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Link the executable to the required libraries
-target_link_libraries(Miner spdlog::spdlog ZLIB::ZLIB libcoro::libcoro rapidjson)
+target_link_libraries(Miner spdlog::spdlog ZLIB::ZLIB libcoro::libcoro rapidjson tsl::hopscotch_map)
 
 # Add tests for easier development of functions.
 add_executable(MinerTests tests/Tests.cpp)
 target_sources(MinerTests PRIVATE ${SOURCE_FILES} ${HEADER_ONLY_FILES})
 target_include_directories(MinerTests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(MinerTests spdlog::spdlog ZLIB::ZLIB libcoro::libcoro rapidjson Catch2::Catch2WithMain)
+target_link_libraries(MinerTests spdlog::spdlog ZLIB::ZLIB libcoro::libcoro rapidjson tsl::hopscotch_map Catch2::Catch2WithMain)

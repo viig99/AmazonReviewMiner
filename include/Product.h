@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <tsl/hopscotch_map.h>
 #include <filesystem>
 #include <optional>
 #include "JSONLReader.h"
@@ -34,5 +34,5 @@ public:
     void showProducts();
 
 private:
-    unordered_map<string, Product> asin2product;
+    tsl::hopscotch_map<string, Product> asin2product;
 };

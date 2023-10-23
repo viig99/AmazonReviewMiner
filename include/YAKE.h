@@ -7,8 +7,8 @@
 #include "string"
 #include "vector"
 #include "algorithm"
-#include "unordered_map"
-#include "unordered_set"
+#include <tsl/hopscotch_map.h>
+#include <tsl/hopscotch_set.h>
 #include "TextUtils.h"
 #include "Utils.h"
 #include "TimeUtils.h"
@@ -36,16 +36,16 @@ private:
     vector<string> generateCandidateKeywords(const vector<vector<string>> &sentences);
 
     // Internal Stats Tracking
-    unordered_map<string, int> _tfU;
-    unordered_map<string, int> _tfA;
-    unordered_map<string, unordered_set<int>> PositionW;
-    unordered_map<string, unordered_set<string>> CoOccurrenceLeft;
-    unordered_map<string, unordered_set<string>> CoOccurrenceRight;
+    tsl::hopscotch_map<string, int> _tfU;
+    tsl::hopscotch_map<string, int> _tfA;
+    tsl::hopscotch_map<string, tsl::hopscotch_set<int>> PositionW;
+    tsl::hopscotch_map<string, tsl::hopscotch_set<string>> CoOccurrenceLeft;
+    tsl::hopscotch_map<string, tsl::hopscotch_set<string>> CoOccurrenceRight;
 
-    unordered_map<string, int> _tf;
-    unordered_map<string, int> _tfBigrams;
-    unordered_map<string, int> _tfTrigrams;
-    unordered_map<string, double> _nGramScores;
+    tsl::hopscotch_map<string, int> _tf;
+    tsl::hopscotch_map<string, int> _tfBigrams;
+    tsl::hopscotch_map<string, int> _tfTrigrams;
+    tsl::hopscotch_map<string, double> _nGramScores;
 
     // Utils
     unique_ptr<StopwordRemover> _stopwordRemover;
